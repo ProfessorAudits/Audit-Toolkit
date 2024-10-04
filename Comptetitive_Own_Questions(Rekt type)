@@ -1,0 +1,18 @@
+Do you have all actors, roles, and privileges documented?
+Do you keep documentation of all the external services, contracts, and oracles you rely on?
+The best ways to attack your system?
+Define key invariants for the system?
+The best automated tools to discover security issues in your code?
+Usage of Oracle?
+Governance ?
+Multi-Chain ?
+Signatures used ?
+What Token Standards Used ?
+Total Lines of SLOC ?
+Complexity of Code ?
+How many Public and External Functions?
+What external libraries are used? (like: ChainLink , Openzeppelin)
+Run the code through a spellchecker ?
+Avoid using assembly as much as possible? (Use of assembly increases audit times because it throws away Solidity's guardrails and must be checked much more carefully)
+Document use of unchecked. (Concretely describe why it is safe to not perform arithmetic checks on each code block. Preferably for each operation.)
+Any public function that can be made external should be made external.( This is not just a gas consideration, but it also reduces the cognitive overhead for auditors because it reduces the number of possible contexts in which the function can be called.)
