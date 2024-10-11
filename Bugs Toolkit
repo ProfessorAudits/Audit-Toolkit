@@ -1,25 +1,26 @@
 BUGS :
 
-1. Re-Entrancy
-2. Access Control
-3. DOS or Gas Griefing
-4. Rounding errors
-5. Front-running
-6. Weird ERC-20
-7. Oracle Manipulation + FlashLoan Price Attacks 
-8. Upgrade bugs + related to proxy
-9. Governance Bugs(msg.sender spoofing or Double voting + FlashLoan Governance Attacks)
-10. Improper Input Validation
-11. Unchecked return values
-12. Hash Collisions
-13. Lack of Error Handling
+1. Re-Entrancy = BASIC   
+2. Access Control = BASIC
+3. DOS or Gas Griefing  = BASIC
+4. Improper Input Validation = BASIC  
+5. Unchecked return values   = BASIC
+6. Hash Collisions   = BASIC
+7. Lack of Error Handling  = BASIC
+8. Weird ERC-20 = BASIC
+9. Rounding errors(Precision Loss) ✅ 
+10. Front-running  ✅ 
+11. Oracle Manipulation + FlashLoan Price Attacks 
+12. Upgrade bugs + related to proxy
+13. Governance Bugs(msg.sender spoofing or Double voting + FlashLoan Governance Attacks)  
+14. Signature Related Bugs 
+15. Inflation Attacks
 
-17. Not Supported Opcodes when different deployed on different chains  
-18. Signature Related Bugs 
-19. Using the Chainlink Randomness Oracle Wrong 
-20. Bypassing the Contract Check 
-21. Logic Bugs in Lending Protocol
-22. Vulnerabilities in staking protocols 
+15. Not Supported Opcodes when different deployed on different chains  
+16. Using the Chainlink Randomness Oracle Wrong 
+17. Bypassing the Contract Check 
+18. Logic Bugs in Lending Protocol
+19. Vulnerabilities in staking protocols 
 
 
 
