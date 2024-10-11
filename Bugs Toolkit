@@ -11,10 +11,10 @@ BUGS :
 9. Rounding errors(Precision Loss)  
 10. Front-running  
 11. Oracle Manipulation + FlashLoan Price Attacks (Patrick Course)
-12. Upgrade bugs + related to proxy (Owen Youtube)
-13. Governance Bugs(msg.sender spoofing or Double voting + FlashLoan Governance Attacks) (Owen Youtube)
-14. Signature Related Bugs (Patrick Course)
-15. Inflation Attacks (Owen Youtube)
+12. Inflation Attacks (Owen Youtube)
+13. Signature Related Bugs (Patrick Course) 
+14. Governance Bugs(msg.sender spoofing or Double voting + FlashLoan Governance Attacks) (Owen Youtube)
+15. Upgrade bugs + related to proxy (Owen Youtube)
 
 15. Not Supported Opcodes when different deployed on different chains  
 16. Using the Chainlink Randomness Oracle Wrong 
