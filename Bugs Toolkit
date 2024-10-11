@@ -1,20 +1,20 @@
 BUGS :
 
-1. Re-Entrancy = BASIC   
+1. Re-Entrancy = BASIC  ✅ 
 2. Access Control = BASIC
 3. DOS or Gas Griefing  = BASIC
 4. Improper Input Validation = BASIC  
-5. Unchecked return values   = BASIC
-6. Hash Collisions   = BASIC
-7. Lack of Error Handling  = BASIC
+5. Unchecked return values   = BASIC  ✅ 
+6. Hash Collisions   = BASIC  ✅ 
+7. Lack of Error Handling  = BASIC  ✅ 
 8. Weird ERC-20 = BASIC
-9. Rounding errors(Precision Loss) ✅ 
-10. Front-running  ✅ 
-11. Oracle Manipulation + FlashLoan Price Attacks 
-12. Upgrade bugs + related to proxy
-13. Governance Bugs(msg.sender spoofing or Double voting + FlashLoan Governance Attacks)  
-14. Signature Related Bugs 
-15. Inflation Attacks
+9. Rounding errors(Precision Loss)  
+10. Front-running  
+11. Oracle Manipulation + FlashLoan Price Attacks (Patrick Course)
+12. Upgrade bugs + related to proxy (Owen Youtube)
+13. Governance Bugs(msg.sender spoofing or Double voting + FlashLoan Governance Attacks) (Owen Youtube)
+14. Signature Related Bugs (Patrick Course)
+15. Inflation Attacks (Owen Youtube)
 
 15. Not Supported Opcodes when different deployed on different chains  
 16. Using the Chainlink Randomness Oracle Wrong 
