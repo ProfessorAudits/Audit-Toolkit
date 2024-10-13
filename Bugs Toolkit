@@ -1,13 +1,13 @@
 BUGS :
 
 1. Re-Entrancy = BASIC  ✅ 
-2. Access Control = BASIC
-3. DOS or Gas Griefing  = BASIC
-4. Improper Input Validation = BASIC  
+2. Access Control = BASIC ✅
+3. DOS or Gas Griefing  = BASIC ✅
+4. Improper Input Validation(proper require statements on params) = BASIC  ✅ 
 5. Unchecked return values   = BASIC  ✅ 
 6. Hash Collisions   = BASIC  ✅ 
 7. Lack of Error Handling  = BASIC  ✅ 
-8. Weird ERC-20 = BASIC
+8. Weird ERC-20 = BASIC ✅ 
 9. Rounding errors(Precision Loss)  
 10. Front-running  
 11. Oracle Manipulation + FlashLoan Price Attacks (Patrick Course)
