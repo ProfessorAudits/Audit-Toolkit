@@ -9,7 +9,7 @@ BUGS :
 7. Lack of Error Handling  = BASIC  ✅ 
 8. Weird ERC-20 = BASIC ✅ 
 9. Rounding errors(Precision Loss) ✅ 
-10. Front-running  
+10. Front-running(Only be done on L1 systems, It can't happen on any L2 Chain) ✅ 
 11. Oracle Manipulation + FlashLoan Price Attacks (Patrick Course)
 12. Inflation Attacks (Owen Youtube)
 13. Signature Related Bugs (Patrick Course) 
