@@ -22,9 +22,17 @@ BUGS :
 18. Logic Bugs in Lending Protocol
 19. Vulnerabilities in staking protocols 
 
+1. External Calls Safety (DOS,Re-entrancy,Gas-griefing & unchecked return values)
+2. Access Control
+3. Weird Erc-20's
+4. Rounding Errors
+5. Front-running
 
-
-
+6. Oracle/Price Manipulation
+7. Governance Attacks
+8. Signature Bugs
+9. Upgrade Bugs
+10. Inflation Attacks
 
 A security issue in Solidity boils down to smart contracts not behaving the way they were intended to. This can fall into four broad categories:
 
