@@ -26,13 +26,14 @@ BUGS :
 2. Access Control
 3. Weird Erc-20's
 4. Rounding Errors
-5. Front-running 1.
 
-6. Oracle/Price Manipulation 2. 
+5. Front-running (Sandwich Attack,lack of slippage control)
+6. Oracle/Price Manipulation 
 7. Governance Attacks
+
 8. Inflation Attacks
 9. Upgrade Bugs
-10. Signature Bugs 3.
+10. Signature Bugs 
 
 This will increase the focus level by 300%.
 NOTE: Get up & walk for 3-4 min then sit again drink a glass of water then close you eyes and focus on your breath for atleast 15 min.
