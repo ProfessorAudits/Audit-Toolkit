@@ -3,7 +3,7 @@
 - [Setup](#setup)
   - [Creating new projects](#creating-new-projects)
   - [Usage in existing projects](#usage-in-existing-projects)
-  - [Deploying a Contract from CLI Using forge create](Deploying-a-Contract-from-CLI-Using-forge-create)
+  - [Private Key Management](Private-Key-Management)
 - [Dependencies](#dependencies)
   - [Adding dependencies](#adding-dependencies)
   - [Deploying a Contract from CLI Using forge create](#Deploying-a-Contract-from-CLI-Using-forge-create)
@@ -79,7 +79,7 @@ out = "out"
 lib = "lib"
 ```
 
-## PrivateKey Management
+## Private Key Management
 
 ## When using for test_development purpose's:
 
@@ -95,10 +95,15 @@ source .env
 
 This will load the variables in our terminal session, Now we can access these variables
 in our script contracts using
-```sh vm.envString("VARIABLE_NAME") ```
+
+```sh
+vm.envString("VARIABLE_NAME")
+ ```
 
 Also, with like:
-```sh forge script script/YourScript.s.sol:YourContractName --private-key $PRIVATE_KEY --rpc-url $RPC_URL --broadcast```
+```sh 
+forge script script/YourScript.s.sol:YourContractName --private-key $PRIVATE_KEY --rpc-url $RPC_URL --broadcast
+```
 
 This way we don't have to paste private key info everytime we run forge script to deploy
 
@@ -114,8 +119,15 @@ Ensure that your deployment scripts are configured to read from these secure sou
 
  OR 
 If we are not using environment variables, or any external file to handle private key 
-we can use ```sh --interactive``` to directly paste our private keys when prompted during the deployment process.
-Eg: ```sh forge script script/YourScript.s.sol:YourContractName --rpc-url YOUR_RPC_URL --interactive --broadcast  ```
+we can use
+```sh
+--interactive
+```
+ to directly paste our private keys when prompted during the deployment process.
+Eg: 
+```sh
+forge script script/YourScript.s.sol:YourContractName --rpc-url YOUR_RPC_URL --interactive --broadcast  
+```
 
 
 
