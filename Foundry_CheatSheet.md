@@ -3,10 +3,10 @@
 - [Setup](#setup)
   - [Creating new projects](#creating-new-projects)
   - [Usage in existing projects](#usage-in-existing-projects)
-  - [Private Key Management](Private-Key-Management)
+  - [Private Key Management](#private-key-management)
 - [Dependencies](#dependencies)
   - [Adding dependencies](#adding-dependencies)
-  - [Deploying a Contract from CLI Using forge create](#Deploying-a-Contract-from-CLI-Using-forge-create)
+  - [Deploying a Contract from CLI Using forge create](#deploying-a-contract-from-cli-using-forge-create)
   - [Remappings](#remappings)
 - [Testing](#testing)
   - [Fork testing](#fork-testing)
@@ -112,6 +112,7 @@ NOTE: Only paste private key in plain_text for just development purpose's not wi
 
 
 ## When using for real_development or deploying purpose's:
+METHOD 1: 
 Use environment variables or a secure secrets manager to handle sensitive information(If we are not using environment variables,
 we can use a separate config file (not committed to version control) to store sensitive information and
 read from it in our scripts.) like private keys and RPC URLs.
@@ -129,7 +130,32 @@ Eg:
 forge script script/YourScript.s.sol:YourContractName --rpc-url YOUR_RPC_URL --interactive --broadcast  
 ```
 
+METHOD 2: (NEW)
+ERC-2335 (encrypt private key in json format)
+To do so, Use Operating System Terminal it's better than using VSCode Terminal.(just for this)
 
+So, First we will store/import our private key:
+command: 
+```sh
+cast wallet import <Any_Name_for_privatekey> --interactive
+```
+
+It will ask for the private key and then a password to encrypt it.
+Make sure to remember the password you set here and 
+```html
+<b>it will give a address make sure to note it down too (not sensitive info, so can store even in anyVSCode file)</b>
+```
+
+Now when we can see our added/imported private_key_name by using command:
+```sh
+cast wallet list
+```
+Now we can use this private_key_name & password to sign transactions while deploying or interacting with contracts  
+Like:
+```sh
+forge script script/SimpleStorage.s.sol:DeploySimpleStorage --rpc-url <your_rpc_url> --account <private_key_name> --sender <address_we_gotafter_addingPrivateKeyinCast> --broadcast
+```
+ This will ask for the password we set while importing the private key and then the deployment will happen
 
 ## Dependencies
 
