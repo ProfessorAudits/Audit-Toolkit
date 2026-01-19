@@ -4,6 +4,7 @@
   - [Creating new projects](#creating-new-projects)
   - [Usage in existing projects](#usage-in-existing-projects)
   - [Private Key Management](#private-key-management)
+  - [Interacting with onchain contracts using cast](#interacting-with-onchain-contracts-using-cast)
 - [Dependencies](#dependencies)
   - [Adding dependencies](#adding-dependencies)
   - [Deploying a Contract from CLI Using forge create](#deploying-a-contract-from-cli-using-forge-create)
@@ -156,6 +157,32 @@ Like:
 forge script script/SimpleStorage.s.sol:DeploySimpleStorage --rpc-url <your_rpc_url> --account <private_key_name> --sender <address_we_gotafter_addingPrivateKeyinCast> --broadcast
 ```
  This will ask for the password we set while importing the private key and then the deployment will happen
+
+### Interacting with onchain contracts using cast
+
+Case 1: Send transactions 
+```sh
+cast send <contract-address> "store(uint256)" 42 --private-key <private-key> --rpc-url <rpc-url>
+```
+store(uint256) is the function we are calling on the contract
+42 is the argument we are passing to the function
+
+Case 2: Read state/Transactions
+
+It means like a view function
+command: 
+```sh
+cast call <contract-address> "retrieve()"
+```
+
+retrieve() is the function we are calling on the contract   
+
+It will return the value in hex because solidity uses hex format internally to store it
+To convert hex to decimal use:
+```sh
+cast --to-base  <hex-value> dec
+```
+It will convert hex to decimal(just like we enter values normally)
 
 ## Dependencies
 
