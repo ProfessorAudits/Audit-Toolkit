@@ -3,6 +3,7 @@
 - [Setup](#setup)
   - [Creating new projects](#creating-new-projects)
   - [Usage in existing projects](#usage-in-existing-projects)
+  - [Deploying a Contract from CLI Using forge create](Deploying-a-Contract-from-CLI-Using-forge-create)
 - [Dependencies](#dependencies)
   - [Adding dependencies](#adding-dependencies)
   - [Deploying a Contract from CLI Using forge create](#Deploying-a-Contract-from-CLI-Using-forge-create)
@@ -77,6 +78,46 @@ src = "contracts"
 out = "out"
 lib = "lib"
 ```
+
+## PrivateKey Management
+
+## When using for test_development purpose's:
+
+We can use make a .env file in project folder and create variables there to store our private keys and rpc url
+```sh
+Eg: PRIVATE_KEY="your_private_key"
+       RPC_URL="your_rpc_url"
+```
+ Then we have to move to terminal and run the command :
+ ```sh
+source .env
+```
+
+This will load the variables in our terminal session, Now we can access these variables
+in our script contracts using
+```sh vm.envString("VARIABLE_NAME") ```
+
+Also, with like:
+```sh forge script script/YourScript.s.sol:YourContractName --private-key $PRIVATE_KEY --rpc-url $RPC_URL --broadcast```
+
+This way we don't have to paste private key info everytime we run forge script to deploy
+
+NOTE: Only paste private key in plain_text for just development purpose's not with real money associated with it.
+       Never commit your .env file to any public repository 
+
+
+## When using for real_development or deploying purpose's:
+Use environment variables or a secure secrets manager to handle sensitive information(If we are not using environment variables,
+we can use a separate config file (not committed to version control) to store sensitive information and
+read from it in our scripts.) like private keys and RPC URLs.
+Ensure that your deployment scripts are configured to read from these secure sources without hardcoding sensitive data.
+
+ OR 
+If we are not using environment variables, or any external file to handle private key 
+we can use ```sh --interactive``` to directly paste our private keys when prompted during the deployment process.
+Eg: ```sh forge script script/YourScript.s.sol:YourContractName --rpc-url YOUR_RPC_URL --interactive --broadcast  ```
+
+
 
 ## Dependencies
 
