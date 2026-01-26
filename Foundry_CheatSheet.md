@@ -2,6 +2,7 @@
 
 - [Setup](#setup)
   - [Creating new projects](#creating-new-projects)
+  - [Creating new projects(foundry vs foundry-zksync)](#creating-new-projects-foundry-vs-foundry-zksync)
   - [Usage in existing projects](#usage-in-existing-projects)
   - [Private Key Management](#private-key-management)
   - [Interacting with onchain contracts using cast](#interacting-with-onchain-contracts-using-cast)
@@ -41,6 +42,16 @@ forge init --template <template> <project_name>
 
 # Example
 forge init --template https://github.com/zobront/paradigm-ctf paradigm_ctf
+```
+
+### Creating new projects foundry vs foundry-zksync
+```sh
+foundryup (for normal)
+foundryup-zksync (for zksync)
+forge test (for normal) (same for other like script and create)
+forge test --zkysync (for zksync) (same for other like script and create but for zksync)
+anvil (for normal)
+anvil --zkysync (for zksync)
 ```
 
 ### Deploying a Contract from CLI Using forge create
