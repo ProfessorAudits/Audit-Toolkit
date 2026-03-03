@@ -1,3 +1,8 @@
+## Resources Used:
+https://solidity-by-example.org/ (mostly used)
+
+
+
 ## Receive vs Fallback 
 ```
          is msg.data empty?
@@ -83,8 +88,80 @@ NOTE: memory is also used for declaring variables inside a function
 
 function params: need to specify, memory or calldata
 state variables: no need to specify directly storage
+```
+## STACK & TRANSIENT STORAGE
+```
+Data stored in transient storage is cleared out after transaction.
+tstore and tload are opcodes for assembly.
+Use Cases: for reentrancy guard etc.
 
-| STACK & TRANSIENT STORAGE
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.26;
+
+// Storage - data is stored on the blockchain
+// Memory - data is cleared out after a function call
+// Transient storage - data is cleared out after a transaction
+
+interface ITest {
+    function val() external view returns (uint256);
+    function test() external;
+}
+
+// Contract for testing TestStorage and TestTransientStorage
+// Shows the difference between normal storage and transient storage
+contract Callback {
+    uint256 public val;
+
+    fallback() external {
+        val = ITest(msg.sender).val();
+    }
+
+    function test(address target) external {
+        ITest(target).test();
+    }
+}
+
+
+contract TestTransientStorage {
+    bytes32 constant SLOT = 0;
+
+    function test() public {
+        assembly {
+            tstore(SLOT, 321)
+        }
+        bytes memory b = "";
+        msg.sender.call(b);
+    }
+
+    function val() public view returns (uint256 v) {
+        assembly {
+            v := tload(SLOT)
+        }
+    }
+}
+
+contract ReentrancyGuardTransient {
+    bytes32 constant SLOT = 0;
+
+    modifier lock() {
+        assembly {
+            if tload(SLOT) { revert(0, 0) }
+            tstore(SLOT, 1)
+        }
+        _;
+        assembly {
+            tstore(SLOT, 0)
+        }
+    }
+
+    // 4909 gas
+    function test() external lock {
+        // Ignore call error
+        bytes memory b = "";
+        msg.sender.call(b);
+    }
+}
+
 
 ```
 ## Events, Enums, Errors, Require & Assert
@@ -98,18 +175,18 @@ state variables: no need to specify directly storage
 }
 
 | Errors - only used while/when in reverting state 
-  error NotAllowed();
+  error NotAllowed(uint256 available, uint256 required);
 
   function calcc(uint abc) public {
      // LOGIC
-     require( abc > 0, NotAllowed());
+     require( abc > 0, NotAllowed(12, 11));
 }
 
 | Require & Assert
 
   function jacl(uint abc) public {
-    require(abc > 12, "hello");
-    assert(abc>6);
+    require(abc > 12, "hello"); require and revert both returns string when failed while try&catch
+    assert(abc>6); // reverts with Panic(0x01) , returns bytes while try&catch
 }
 
 | Enums
@@ -124,4 +201,91 @@ state variables: no need to specify directly storage
    function newRegister() public returns(RegistrationStatus){
      return RegistrationStatus.in_progress;
 }
+```
+
+## Try Catch 
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.26;
+
+// External contract used for try / catch examples
+contract Foo {
+    address public owner;
+
+    constructor(address _owner) {
+        require(_owner != address(0), "invalid address");
+        assert(_owner != 0x0000000000000000000000000000000000000001);
+        owner = _owner;
+    }
+
+    function myFunc(uint256 x) public pure returns (string memory) {
+        require(x != 0, "require failed");
+        return "my func was called";
+    }
+}
+
+contract Bar {
+    event Log(string message);
+    event LogBytes(bytes data);
+
+    Foo public foo;
+
+    constructor() {
+        // This Foo contract is used for example of try catch with external call
+        foo = new Foo(msg.sender);
+    }
+
+    // Example of try / catch with external call
+    // tryCatchExternalCall(0) => Log("external call failed")
+    // tryCatchExternalCall(1) => Log("my func was called")
+    function tryCatchExternalCall(uint256 _i) public {
+        try foo.myFunc(_i) returns (string memory result) {
+            emit Log(result);
+        } catch {
+            emit Log("external call failed");
+        }
+    }
+
+    // Example of try / catch with contract creation
+    // tryCatchNewContract(0x0000000000000000000000000000000000000000) => Log("invalid address")
+    // tryCatchNewContract(0x0000000000000000000000000000000000000001) => LogBytes("")
+    // tryCatchNewContract(0x0000000000000000000000000000000000000002) => Log("Foo created")
+    function tryCatchNewContract(address _owner) public {
+        try new Foo(_owner) returns (Foo foo) {
+            // you can use variable foo here
+            emit Log("Foo created");
+        } catch Error(string memory reason) {
+            // catch failing revert() and require()
+            emit Log(reason);
+        } catch (bytes memory reason) {
+            // catch failing assert()
+            emit LogBytes(reason);
+        }
+    }
+}
+
+```
+
+##  break & continue &  "?:"
+```
+//  SYNTAX <condition> ? <ifTrue> : <if false>
+
+ function addit(uint num1) public returns(uint) {
+  return num1 / 2 + (num1 % 3 == 0 ? 0 : 1);
+```
+
+## Keccak256
+```
+| A deterministic hashing mechainsm used to produces hashes from input, cannot produce input from output
+
+Some use cases are:
+
+- Creating a deterministic unique ID from an input
+- Commit-Reveal scheme
+- Compact cryptographic signature (by signing the hash instead of a larger input)
+
+ function jik()public{
+  keccak256(120);
+} 
+
 ```
