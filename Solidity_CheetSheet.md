@@ -368,3 +368,284 @@ It’s internal logic, No external calls, Cheaper gas, No cross-contract attack 
 
 This difference is VERY important in audits.
 ```
+## Virtual, override & Super in Inheritance
+```
+2️⃣ virtual & override Rules
+
+✅ virtual
+Must be written in parent if you want it to be overridden.
+```
+```
+function foo() public virtual {}
+```
+
+```
+✅ override
+Must be written in child if overriding.
+```
+
+```
+function foo() public override {}
+```
+```
+🚨 Important:
+
+If multiple parents define the same function:
+override(B, C), You MUST list all parents.
+```
+
+```
+
+3️⃣ If Multiple Parents Have Same Function
+Case A: Both override it
+
+✔ You MUST override in child
+❌ Otherwise → Compile error
+
+Case B: Only one overrides
+
+✔ No need to override in child
+That implementation is used
+
+Case C: None override (only defined in base)
+
+✔ No issue
+Base version is used
+```
+
+```
+4️⃣ What super Actually Means
+
+❌ NOT: "call my immediate parent"
+
+✅ ACTUAL MEANING:
+
+Call the next contract in Solidity’s C3 linearized inheritance order.
+
+5️⃣ C3 Linearization Rule
+If:
+contract D is B, C
+
+Linearization order:
+
+D → C → B → A
+
+⚠ Parent order matters.
+```
+## Chain(.super) Mechainsm in Inheritance adv
+```
+> How can we make B, C, and A all execute their versions of the same function?
+
+# 🧱 First Understand the Problem
+
+Imagine this structure:
+
+```
+```
+     A
+   /   \
+  B     C
+   \   /
+     D
+```
+
+```
+* A has `foo()`
+* B overrides `foo()`
+* C overrides `foo()`
+* D overrides `foo()`
+
+Now if you call:
+
+```solidity
+D.foo()
+```
+
+By default, only ONE implementation runs unless we chain them.
+
+```
+
+```
+ ❌ What Happens If Parents Don’t Call `super`?
+
+Example:
+```
+
+```solidity
+contract B is A {
+    function foo() public virtual override returns (string memory) {
+        return "B";
+    }
+}
+
+contract C is A {
+    function foo() public virtual override returns (string memory) {
+        return "C";
+    }
+}
+
+contract D is B, C {
+    function foo() public override(B, C) returns (string memory) {
+        return super.foo();
+    }
+}
+```
+
+```
+### Execution Order (important)
+
+Since:
+contract D is B, C
+
+Linearization becomes:
+D → C → B → A
+
+Now when calling:
+
+D.foo()
+```
+```
+Steps:
+
+1. D.foo()
+2. super → goes to C.foo()
+3. C returns "C"
+4. Execution stops
+
+❗ B and A never run.
+```
+```
+## 🔥 Why Did It Stop?
+
+Because C did NOT call `super`.
+It just returned `"C"`.
+
+So the chain ended there.
+```
+```
+# ✅ How To Make Everyone Execute
+
+Each contract must call `super`.
+Think of it like passing a baton in a relay race. If one runner refuses to pass the baton → race ends.
+# 🟢 Correct Version
+```
+
+```solidity
+contract A {
+    function foo() public virtual returns (string memory) {
+        return "A";
+    }
+}
+
+contract B is A {
+    function foo() public virtual override returns (string memory) {
+        return string.concat("B ", super.foo());
+    }
+}
+
+contract C is A {
+    function foo() public virtual override returns (string memory) {
+        return string.concat("C ", super.foo());
+    }
+}
+
+contract D is B, C {
+    function foo() public override(B, C) returns (string memory) {
+        return super.foo();
+    }
+}
+```
+
+```
+
+# 🧠 Now What Happens?
+
+Linearization:
+ D → C → B → A
+
+Calling:
+
+
+D.foo()
+```
+
+```
+Step by step:
+
+1. D.foo()
+2. super → C.foo()
+3. C runs → calls super
+4. super → B.foo()
+5. B runs → calls super
+6. super → A.foo()
+7. A returns "A"
+
+Now values combine:
+
+A → "A"
+B → "B A"
+C → "C B A"
+
+Final result:
+
+
+"C B A"
+```
+
+```
+
+# 🎯 The Golden Rule
+
+If you want ALL parents to execute:
+
+👉 Every overridden function must call `super`.
+
+If even one parent doesn’t call `super`, execution chain stops there.
+
+```
+
+```
+# 🏗 Real-World Example (Very Important)
+
+OpenZeppelin uses this pattern in hooks like:
+```
+
+```solidity
+_beforeTokenTransfer()
+```
+
+Each contract adds logic but calls:
+
+```solidity
+super._beforeTokenTransfer(...)
+```
+
+```
+That way:
+
+* Pausable logic runs
+* ERC20 logic runs
+* Snapshot logic runs
+* Your custom logic runs
+
+All in correct order.
+
+If you forget `super` in one override?
+
+🔥 You break the whole system.
+
+```
+
+```
+# 🧠 Simple Mental Model
+
+Imagine inheritance like a linked list:
+
+D → C → B → A
+
+Calling `super` means:
+
+👉 “Call the next node”
+
+No `super` = break the chain.
+```
