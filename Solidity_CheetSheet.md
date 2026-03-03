@@ -289,3 +289,82 @@ Some use cases are:
 } 
 
 ```
+
+## New Keyword vs Inheritance in Solidity
+```
+🔹 1️⃣ Using new Keyword
+
+When you use:
+```
+```
+Child c = new Child();
+```
+```
+What happens?
+A completely new contract is deployed. It gets a separate address.
+
+It has its own:
+- storage
+- balance
+- state
+
+The parent contract just stores its address.
+The contract using new is deployed on one address,
+The contract created with new is deployed separately on a different address.
+
+✔ Two contracts
+✔ Two addresses
+✔ Separate storage
+```
+
+```
+🔹 2️⃣ Using Inheritance
+
+Example:
+```
+```
+contract A {
+    function foo() public pure returns(uint) {
+        return 1;
+    }
+}
+
+contract B is A {
+}
+```
+```
+What happens? When you deploy B:
+   ONLY B is deployed. A is not deployed separately. B contains the code of A.
+
+There is one contract, One address, One storage layout
+
+So your statement:
+In inheritance, it's not the case, There is single contract that will deployed. That contract will have the functionality of both. Single address Single contract is deployed.
+
+✅ That is correct.
+
+Just improve grammar slightly:
+
+👉 In inheritance, only the derived contract is deployed.
+The parent contract’s code becomes part of the child contract.
+There is a single contract with a single address.
+```
+```
+⚠️ Important Auditor-Level Detail
+
+There is one subtle thing many beginners miss:
+
+With new:
+
+You are making an external call, Gas cost is higher, Reentrancy becomes possible
+Inter-contract trust assumptions apply
+
+```
+
+```
+With inheritance:
+
+It’s internal logic, No external calls, Cheaper gas, No cross-contract attack surface
+
+This difference is VERY important in audits.
+```
