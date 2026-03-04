@@ -649,3 +649,301 @@ Calling `super` means:
 
 No `super` = break the chain.
 ```
+
+## Interfaces
+```
+**What is an Interface in Solidity?**
+An **interface** in Solidity is a way to define a contract’s external functions without implementing them. It allows us to interact with other contracts without knowing their full source code.
+
+**1. Why Use Interfaces?**
+
+✅ **Calling External Contracts** → Allows interacting with deployed contracts
+✅ **Cross-Contract Communication** → Essential for DeFi (e.g., Uniswap, Aave, Chainlink)
+✅ **Efficiency** → Uses less gas compared to full contract inheritance
+✅ **Security** → Enforces function signatures without exposing implementation
+
+**2. How Interfaces Work**
+
+Interfaces in Solidity:
+- Contain **only function signatures** (no implementation)
+- Functions are **implicitly `external`**
+- Cannot declare state variables
+- Cannot have constructors
+```
+```
+ **3. Basic Interface Example**
+Let’s say we have an **ERC20 token contract** deployed somewhere. We don’t have its full code, but we know its function signatures.
+
+**ERC20 Token Interface**
+```
+
+```solidity
+solidity
+CopyEdit
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+interface IERC20 {
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+}
+
+```
+
+```
+🚀 **This defines an interface for any ERC20 token.**
+
+**4. Using an Interface to Call a Contract**
+Now, let’s **interact** with the ERC20 contract **without knowing its implementation**.
+
+**Calling ERC20 Functions via Interface**
+```
+
+```solidity
+solidity
+CopyEdit
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+interface IERC20 {
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+}
+
+contract TokenInteractor {
+    function sendTokens(address token, address recipient, uint256 amount) external {
+        IERC20(token).transfer(recipient, amount);
+    }
+
+    function getBalance(address token, address owner) external view returns (uint256) {
+        return IERC20(token).balanceOf(owner);
+    }
+}
+
+```
+
+```
+✅ **How it Works:**
+
+- We pass the `token` contract address at runtime.
+- The contract **calls** the `transfer()` and `balanceOf()` functions from the external contract.
+- No need to deploy the actual ERC20 contract inside this contract.
+
+**5. Low-Level Calls vs Interface Calls**
+
+An alternative to using interfaces is using **low-level `call`**, but **interfaces are safer and more readable**.
+
+ **Low-Level `call()` (Risky)**
+
+```
+
+```solidity
+solidity
+CopyEdit
+(bool success, bytes memory data) = token.call(
+    abi.encodeWithSignature("transfer(address,uint256)", recipient, amount)
+);
+require(success, "Transfer failed");
+
+```
+
+```
+🚨 **Downsides:**
+
+- More error-prone
+- Harder to debug
+- No compile-time function signature validation
+
+✅ **Interface calls are safer and preferred.**
+
+**6. Interfaces with Custom Smart Contracts**
+Let’s say we have a **Lending Platform** contract. Other contracts need to interact with it.
+
+**Lending Platform Contract**
+
+```
+
+```solidity
+solidity
+CopyEdit
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.19;
+
+contract LendingPlatform {
+    mapping(address => uint256) public deposits;
+
+    function deposit() external payable {
+        deposits[msg.sender] += msg.value;
+    }
+
+    function withdraw(uint256 amount) external {
+        require(deposits[msg.sender] >= amount, "Insufficient balance");
+        deposits[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
+    }
+}
+
+```
+
+```
+Now, let’s create an interface for **external contracts to interact with it**.
+
+**Lending Interface**
+```
+
+```solidity
+solidity
+CopyEdit
+interface ILendingPlatform {
+    function deposit() external payable;
+    function withdraw(uint256 amount) external;
+}
+
+```
+
+**Using the Interface in Another Contract**
+
+```solidity
+solidity
+CopyEdit
+contract User {
+    function depositFunds(address lendingPlatform) external payable {
+        ILendingPlatform(lendingPlatform).deposit{value: msg.value}();
+    }
+
+    function withdrawFunds(address lendingPlatform, uint256 amount) external {
+        ILendingPlatform(lendingPlatform).withdraw(amount);
+    }
+}
+
+```
+
+✅ **Now, this contract can deposit and withdraw funds from any lending platform implementing this interface.**
+
+```
+**7. Interfaces with Chainlink Oracles**
+Chainlink provides price feeds using interfaces.
+
+**Chainlink Price Feed Interface**
+```
+
+```solidity
+solidity
+CopyEdit
+interface AggregatorV3Interface {
+    function latestRoundData()
+        external
+        view
+        returns (
+            uint80 roundId,
+            int256 answer,
+            uint256 startedAt,
+            uint256 updatedAt,
+            uint80 answeredInRound
+        );
+}
+
+```
+
+**Using the Chainlink Interface**
+
+```solidity
+solidity
+CopyEdit
+contract PriceConsumer {
+    AggregatorV3Interface internal priceFeed;
+
+    constructor(address _priceFeed) {
+        priceFeed = AggregatorV3Interface(_priceFeed);
+    }
+
+    function getLatestPrice() public view returns (int) {
+        (, int price, , , ) = priceFeed.latestRoundData();
+        return price;
+    }
+}
+
+```
+
+✅ **This contract fetches price data without needing Chainlink’s full implementation.**
+```
+
+ **8. Summary**
+
+| Feature | Details |
+| --- | --- |
+| **What is an Interface?** | A way to interact with external contracts without implementation |
+| **Why Use It?** | Saves gas, improves security, enables modularity |
+| **How to Declare?** | `interface InterfaceName { function myFunction() external; }` |
+| **Implicit Rules** | No state variables, all functions `external` |
+| **Use Cases** | ERC20, Lending, Chainlink, Uniswap, DeFi protocols |
+
+
+**9. What’s Next?**
+
+Do you want:
+
+1. **Advanced topics like interface inheritance?**
+2. **Security risks of using interfaces?**
+3. **How Uniswap and Aave use interfaces in production?**
+
+When using an **interface** in Solidity, there are two different contexts:
+
+1. **Implementing the Interface in a Contract** (e.g., `MyToken` implementing `IERC20`)
+2. **Interacting with an External Contract Using the Interface** (e.g., calling an ERC-20 contract's functions from another contract)
+
+
+```
+
+**1️⃣ Implementing an Interface in a Contract**
+
+When you implement an interface **inside a contract**, you are defining the contract itself. So you don’t need to specify an address because the contract already knows its own address.
+
+Example:
+
+```solidity
+solidity
+CopyEdit
+contract MyToken is IERC20 {
+    mapping(address => uint256) private balances;
+
+    function transfer(address to, uint256 amount) external override returns (bool) {
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
+        return true;
+    }
+}
+
+```
+
+- Here, `transfer` is defined **inside** `MyToken`.
+- Since `MyToken` itself follows the `IERC20` structure, no need to use an address.
+
+```
+
+**2️⃣ Interacting With an External Contract**
+If you want to **call an already deployed ERC-20 contract**, Solidity needs to know **which contract address** to talk to. That's when we wrap the interface around an address like this:
+```
+
+```solidity
+solidity
+CopyEdit
+IERC20(0xTokenContractAddress).transfer(to, amount);
+
+```
+
+Example:
+
+```solidity
+solidity
+CopyEdit
+contract TokenSender {
+    function sendTokens(address token, address to, uint256 amount) external {
+        IERC20(token).transfer(to, amount);
+    }
+}
+
+```
+
+- Here, `IERC20(token)` tells Solidity:**"This is an ERC-20 contract at this address. Call its transfer function."**
+  
