@@ -946,4 +946,54 @@ contract TokenSender {
 ```
 
 - Here, `IERC20(token)` tells Solidity:**"This is an ERC-20 contract at this address. Call its transfer function."**
-  
+
+## Libraries
+```
+- Libraries are similar to contracts, but you can't declare any state variables and you can't send ether.
+- A library is embedded into the contract if all library functions are internal.
+- Otherwise the library must be deployed and then linked before the contract is deployed.
+```
+File 1:
+```
+pragma solidity ^0.8.18;
+
+import {AggregatorV3Interface} from "@chainlink/local/src/data-feeds/interfaces/AggregatorV3Interface.sol"; 
+
+library PriceConverter {
+
+    // We could make this public, but then we'd have to deploy it
+    function getPrice() internal view returns (uint256) {
+        AggregatorV3Interface priceFeed = AggregatorV3Interface(
+            0x694AA1769357215DE4FAC081bf1f309aDC325306
+        );
+        (, int256 answer, , , ) = priceFeed.latestRoundData();
+        return uint256(answer * 10000000000);
+    }
+
+    function getConversionRate(
+        uint256 ethAmount
+    ) internal view returns (uint256) {
+        uint256 ethPrice = getPrice();
+        uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1000000000000000000;
+        return ethAmountInUsd;
+    }
+}
+```
+File 2:
+```
+
+pragma solidity ^0.8.19;
+import "./PriceConverter.sol"; // Library
+
+contract Practice {
+    using PriceConverter for uint256;
+
+    function getRegister() public {
+        newRegister(10, "Taha");
+        msg.value.getConversionRate(); // msg.value will be treated as first parameter as we have declared it with Using keyword to uint256.
+    }
+
+```
+```
+// msg.value will be treated as first parameter as we have declared it with Using keyword to uint256
+```
