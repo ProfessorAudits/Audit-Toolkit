@@ -1,5 +1,11 @@
 # Foundry Cheatsheet
 
+```
+Imp Note: if our Test Contract is deploying a contract then msg.sender will be our test contract
+          but if we are calling a function from test contract the msg.sender will be a different address there not our
+          contract address .
+```
+
 - [Setup](#setup)
   - [Creating new projects](#creating-new-projects)
   - [Creating new projects(foundry vs foundry-zksync)](#creating-new-projects-foundry-vs-foundry-zksync)
