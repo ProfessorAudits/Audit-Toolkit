@@ -1,5 +1,5 @@
 1. Static Analysis (Like : Slither , Aderyn)
-2. AI Help (ChatGpt , Phind)
+2. AI Help (ChatGpt , Claude, Gemini, 365Copilot, Phind)
 3. Community Support
 4. Foundry (Fuzzing and Invariant Test)
 5. cloc (calculating lines of solidity)
