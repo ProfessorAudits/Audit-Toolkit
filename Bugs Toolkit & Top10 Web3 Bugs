@@ -44,3 +44,17 @@ Funds getting stolen
 Funds getting locked up or frozen inside a contract
 People receive less rewards than anticipated (rewards are delayed or reduced)
 People receive more rewards than anticipated (leading to inflation and devaluation)
+
+
+Top10 Bugs 
+
+
+1. Function Parameter Validation
+2. Insufficient Function Acces Control
+3. Price Oracle Manipulation
+4. Rounding Errors
+5. Reentrancty
+6. Governance Attacks
+7. Arbitarary External Calls
+8. Reward Manipulation
+
