@@ -544,3 +544,15 @@ function testSomething(uint256 v) public {
     assertEq(origin, bob);
 
 ```
+## Making a Makefile
+
+1. Create a file with name Makefile
+2. Run it like this
+```
+- include env
+
+build:; forge build
+
+deploy-sepolia:
+  forge script script/DeployInteractions.s.sol:FundMe --rpc-url $(SEPOLIA_RPC_URL) --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+```
