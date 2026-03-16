@@ -521,7 +521,8 @@ function testSomething(uint256 v) public {
   hoax(funderA,300e10);
   vm.warp(1641070800); // set Block Timestamp
   vm.roll(1219); // set Block Number 
-  vm.fee(25 gwei); // Sets Block Fee 
+  vm.fee(25 gwei); // Sets Block Fee
+  vm.txGasPrice(120); // Sets gas price for rest of tx
   vm.getBlockTimestamp();
   vm.getBlockNumber();
   vm.setNonce(account, 1234);
