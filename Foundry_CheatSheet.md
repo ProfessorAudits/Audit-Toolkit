@@ -10,6 +10,7 @@ Imp Note: if our Test Contract is deploying a contract then msg.sender will be o
   - [Creating new projects](#creating-new-projects)
   - [Creating new projects(foundry vs foundry-zksync)](#creating-new-projects-foundry-vs-foundry-zksync)
   - [Usage in existing projects](#usage-in-existing-projects)
+  - [Calculate gas Cost of a test function](#calculate-gas-cost-of-a-test-function).
   - [Private Key Management](#private-key-management)
   - [Interacting with onchain contracts using cast](#interacting-with-onchain-contracts-using-cast)
 - [Dependencies](#dependencies)
@@ -97,6 +98,13 @@ src = "contracts"
 out = "out"
 lib = "lib"
 ```
+
+## Calculate gas Cost of a test function
+```
+forge snapshot
+forge snapshot --match-test testfunctionName
+```
+
 
 ## Private Key Management
 
