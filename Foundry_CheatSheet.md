@@ -32,6 +32,7 @@ Imp Note: if our Test Contract is deploying a contract then msg.sender will be o
     - [Addresses and Keys](#addresses-and-keys)
     - [Math](#math)
   - [Fuzzing](#fuzzing)
+  - [Some Imp Cheatcodes](#some-imp-cheatcodes)
 
 ## Setup
 
@@ -501,4 +502,36 @@ function testSomething(uint256 v) public {
     require(v >= 100 && v <= 500);
     ... 
 }
+```
+## Some Imp Cheatcodes
+```
+  vm.prank()
+  vm.startPrank();
+  vm.stopPrank();
+  vm.deal(account,money);
+  makeAddr("Address A");
+  hoax(funderA,300e10);
+  vm.warp(1641070800); // set Block Timestamp
+  vm.roll(1219); // set Block Number 
+  vm.fee(25 gwei); // Sets Block Fee 
+  vm.getBlockTimestamp();
+  vm.getBlockNumber();
+  vm.setNonce(account, 1234);
+  vm.pauseGasMetering();
+  vm.resumeGasMetering();
+  vm.expectCall(
+        address(token),
+        abi.encodeCall(token.transfer, (alice, 10))
+  );  token.transfer(alice, 10);
+
+  vm.expectEmit();
+  vm.expectRevert();
+    
+// Reading Callers With prank including tx.origin
+    vm.prank(alice, bob);
+    (mode, sender, origin) = vm.readCallers();
+    assertEq(uint8(mode), uint8(CallerMode.Prank));
+    assertEq(sender, alice);
+    assertEq(origin, bob);
+
 ```
