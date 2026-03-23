@@ -997,3 +997,11 @@ contract Practice {
 ```
 // msg.value will be treated as first parameter as we have declared it with Using keyword to uint256
 ```
+
+## Abstract Contract: 
+```
+It means a contract have both implemented and un-implemented(like those functions inside interface) functions.
+
+- When Inheriting an abstract contract, we need to override the unimplemented functions of that abstract contract
+- Sometimes contracts do callback on these unimplemented functions like in ChainlinkVRF.
+```
