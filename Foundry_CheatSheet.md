@@ -377,6 +377,11 @@ function testMockCall() public {
 // Expect the next call to revert
 vm.expectRevert()
 
+// expect Revert when IF (error Notenoughamount(); contract)
+vm.expectRevert(contract_variable_name.Notenoughamount.selector);
+// contract_variable_name can be like : Raffle public raffle (so raffle).
+// no need for error to be in test file
+
 // Expect the next call to revert with `message`
 vm.expectRevert(bytes calldata message)
 
