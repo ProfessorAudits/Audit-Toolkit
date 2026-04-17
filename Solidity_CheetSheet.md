@@ -1005,3 +1005,9 @@ It means a contract have both implemented and un-implemented(like those function
 - When Inheriting an abstract contract, we need to override the unimplemented functions of that abstract contract
 - Sometimes contracts do callback on these unimplemented functions like in ChainlinkVRF.
 ```
+
+## Abi.encode:
+ It converts whatever is given to it in its binary form and returns us the bytes format. 
+
+## Abi.encodePacked:
+ It does same as abi.encode but without padding
