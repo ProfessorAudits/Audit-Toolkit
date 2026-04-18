@@ -1011,3 +1011,117 @@ It means a contract have both implemented and un-implemented(like those function
 
 ## Abi.encodePacked:
  It does same as abi.encode but without padding
+
+## Abi.decode:
+ We can also decode our bytes, basically we can convert our bytes data into whatever type we want
+ ```
+abi.decode(bytes(0x1sas13),(string)); // output will be string we specified string, we can also specify another type like (string,uint) || (string,string)
+```
+## Advanced EVM - Encoding Signatures & Selectors
+Welcome back! Let's bring it all home by learning how we can populate the data field of our transactions to call any function we want.
+
+Step 1 will be creating a new file in Remix named CallAnything.sol.
+
+Now, in order to execute a function using only the data field of a call we need to encode two things:
+```
+The function name
+
+The function parameters to pass
+```
+
+To do this, we're going to need to work with a couple new concepts.
+```
+function selector - the first 4 bytes of a function signature
+
+Example: 0xa9059cbb - this is the function selector of a transfer function.
+
+function signature - a string which defines a function name and its parameters
+
+Example: "transfer(address,uint256)"
+```
+When we send a call to an address, the EVM determines how to respond based on the data we pass with the transaction. We call specific functions by assuring this data includes the function selector we want engaged when the transaction is placed.
+
+One way we can acquire the function selector is to encode the entire function signature, and grab the first 4 bytes of the result.Let's see what this looks like in our contract.
+```
+// SPDX-License-Identifier: MIT
+​
+pragma solidity ^0.8.18;
+​
+contract CallAnything {
+    address public s_someAddress;
+    uint256 public s_amount;
+​
+    function transfer(address someAddress, uint256 amount){
+        s_someAddress = someAddress;
+        s_amount = amount;
+    }
+}
+```
+The above function will have the exact function signature and function selector we saw in our examples.
+```
+Function Selector: 0xa9059cbb
+
+Function Signature: "transfer(address,uint256)"
+
+This is great when we already know a function selector, but..
+
+How do we acquire the function selector programmatically?
+
+The answer is - we can write a function! There are actually a few different ways we can approach this, let's go through them.
+
+function getSelectorOne() public pure returns(bytes4 selector){
+    selector = bytes4(keccak256(bytes("transfer(address,uint256)")));
+}
+```
+
+This is exactly what we'd expect it to be! Great! Now what else do we need? The parameters we're passing our function call are going to need to be encoded with this signature.
+
+Much like abi.encode and abi.encodePacked, the EVM offers us a way to encode our parameters with a given selector through abi.encodeWithSelector
+
+evm-signatures-selectors2
+
+We can write another function to compile this data for our function call for us.
+
+```
+function getDataToCallTransfer(address someAddress, uint256 amount) public pure returns(bytes memory){
+    return abi.encodeWithSelector(getSelectorOne(), someAddress, amount);
+}
+If we compile CallAnything.sol and redeploy in Remix, we can call this function now to get all the data required to call the transfer function. Passing getDataToCallTransfer the contracts own address and an amount of 50 outputs:
+
+0:bytes: 0xa9059cbb0000000000000000000000007b96af9bd211cbf6ba5b0dd53aa61dc5806b6ace0000000000000000000000000000000000000000000000000000000000000032
+This is the data we would need to pass a low-level call in order to call the transfer function with our given parameters. We can now write a function that uses this data to make the function call.
+
+function callTransferWithBinary(address someAddress, uint256 amount) public returns(bytes4, bool){
+    (bool success, bytes memory returnData) = address(this).call(abi.encodeWithSelector(getSelectorOne(), someAddress, amount));
+}
+```
+In the above we're sending our function call to the contract's own address, but this could be any address technically. This call is going to return two things which we're assigning to success and returnData.
+```
+success: A boolean value representing if the transaction was successfully completed.
+
+returnData: any return data provided as a result of the function call.
+
+Typically we'd see something requiring success to be true, but for our example we'll just have our function return these values.
+
+function callTransferWithBinary(address someAddress, uint256 amount) public returns(bytes4, bool){
+    (bool success, bytes memory returnData) = address(this).call(abi.encodeWithSelector(getSelectorOne(), someAddress, amount));
+​
+    return(bytes4(returnData), success);
+}
+What makes this so powerful is the ability to send transaction data this way, agnostic of the contract you send it to. All you need is to change address(this) to the address you want to send the data to.
+
+```
+Another option Solidity affords us is the ability to encode with a signature. This effectively saves us a step since we don't have to determine the function selector first.
+
+```
+function callTransferWithBinarySignature(address someAddress, uint256 amount) public returns(bytes4, bool){
+    (bool success, bytes memory returnData) = address(this).call(abi.encodeWithSignature("transfer(address,uint256)", someAddress, amount));
+​
+    return(bytes4(returnData), success);
+}
+
+```
+This should behave the exact same, try it out yourself!
+
+Alternative Selector Acquisition
+I mentioned there were a few different ways to acquire a function selector and there are a multitude of possible reasons why you may leverage one method over another
