@@ -171,7 +171,10 @@ function test_recordLogs() public {
 vm.recordLogs();
 dummy.setValue(42);
 Vm.Log[] memory logs = vm.getRecordedLogs();
-assertGt(logs.length, 0);
+bytes32 reqId = logs[0].topics[1]; 
+// logs is an array, inside it we have topics arrays which records our all log, In the topics 
+array the first index[0] is reserved for other things so whatever comesin comes after topics[0] index.  
+assert(uint(reqId) != 0);
 }
 
 // =========================
