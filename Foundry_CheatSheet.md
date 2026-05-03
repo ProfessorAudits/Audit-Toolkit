@@ -32,7 +32,7 @@ Imp Note: if our Test Contract is deploying a contract then msg.sender will be o
     - [Assertions](#assertions)
     - [Addresses and Keys](#addresses-and-keys)
     - [Math](#math)
-  - [Fuzzing](#fuzzing)
+  - [Fuzzing,Invariant Setting](#fuzzing)
   - [Some Imp Cheatcodes](#some-imp-cheatcodes)
 
 ## Setup
@@ -498,6 +498,25 @@ uint256 v = percentDelta(int256 a, int256 b)
 ```
 
 ### Fuzzing
+
+1. foundry.toml setup
+```
+[invariant]
+runs = 128
+depth = 128
+fail_on_revert = false
+
+```
+2. Important Imports & setup things:
+```
+import "forge-std/StdInvariant.sol";
+
+In setUp function add this line:
+targetContract(address(HandlerORMaincontract));
+
+In invariant HERE:
+ function name starts with invariant keyword instead of test keyword.
+```
 
 Use `vm.assume()` to specify conditions for inputs. It should only be used for narrow checks:
 ```solidity
