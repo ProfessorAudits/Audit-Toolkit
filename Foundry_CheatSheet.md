@@ -389,6 +389,58 @@ vm.expectRevert(bytes calldata message)
 vm.expectRevert(bytes4 data)
 ```
 
+
+### vm.expectPartialRevert
+
+This cheatcode tells the test:
+```
+“I expect the next call to revert, and I only care that the revert data starts with this selector.”
+```
+
+Useful when:
+```
+custom errors have parameters
+you don’t want to match the full revert bytes
+you only care about the error type
+```
+
+Why not expectRevert?
+
+Suppose you have:
+```
+error TransferFailed(address user, uint256 amount);
+```
+When reverted, Solidity encodes:
+
+```
+TransferFailed(user, amount)
+```
+
+The revert data contains:
+- selector
+- encoded parameters
+
+Sometimes parameters change dynamically.
+
+So instead of matching the entire revert data:
+```
+vm.expectRevert(
+    abi.encodeWithSelector(
+        MyContract.TransferFailed.selector,
+        user,
+        amount
+    )
+);
+```
+you can just match the selector:
+
+```
+vm.expectPartialRevert(
+    MyContract.TransferFailed.selector
+);
+```
+
+
 #### Snapshots
 
 ```solidity
